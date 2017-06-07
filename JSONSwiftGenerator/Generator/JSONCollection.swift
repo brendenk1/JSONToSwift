@@ -82,7 +82,7 @@ extension JSONCollection: Collection {
 
 extension JSONCollection {
     var equatableItems: [(key: String, value: Element)]  {
-        return contents.filter { $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool }
+        return contents.filter { $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] }
     }
     
     var arrayItems: [(key: String, value: Element)] {
@@ -139,7 +139,7 @@ extension JSONCollection {
     }
     
     var objectItemInitStrings: [String] {
-        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\nself.\($0.key) = \($0.key.formattedForSwiftTypeName)JSON(with: \($0.key)Object)" }
+        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\n\t\tself.\($0.key) = \($0.key.capitalized)JSON(with: \($0.key)Object)" }
     }
     
     var objectItemStructNames: [String] {
