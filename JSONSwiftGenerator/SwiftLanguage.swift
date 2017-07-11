@@ -9,6 +9,13 @@
 import Foundation
 
 enum SwiftLanguage {
+    enum Version: Int {
+        case three = 3
+        case four = 4
+    }
+    
+    static var globalVersionSetting: SwiftLanguage.Version = .four
+    
     static var disallowedPropertyNameCharacters: [Character] = [" ", "$", "-"]
     static var disallowedTypeNameCharacters: [Character] = [" ", "$", "-"]
     
@@ -20,5 +27,23 @@ enum SwiftLanguage {
     }
     static func initializerNonOptionalCast(name: String, toType type: String) -> String {
         return "self.\(name) = dictionary[\"\(name)\"] as \(type)"
+    }
+    
+    enum Keyword {
+        static let `struct` = "struct"
+        static let `extension` = "extension"
+        static let `static` = "static"
+        static let `func` = "func"
+        static let `private` = "private"
+        static let `enum` = "enum"
+    }
+    enum ConformingProtocol {
+        static var encodingAndDecoding: String {
+            switch SwiftLanguage.globalVersionSetting {
+            case .four: return ": Codable"
+            default: return ""
+            }
+        }
+        static let equatable = ": Equatable"
     }
 }
