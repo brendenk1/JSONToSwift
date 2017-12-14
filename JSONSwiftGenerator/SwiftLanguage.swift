@@ -14,19 +14,20 @@ enum SwiftLanguage {
         case four = 4
     }
     
-    static var globalVersionSetting: SwiftLanguage.Version = .four
-    
-    static var disallowedPropertyNameCharacters: [Character] = [" ", "$", "-"]
-    static var disallowedTypeNameCharacters: [Character] = [" ", "$", "-"]
+    static var disallowedPropertyNameCharacters: Set<Character> = [" ", "$", "-"]
+    static var disallowedTypeNameCharacters: Set<Character> = [" ", "$", "-"]
     
     static func propertyString(name: String, withType type: String) -> String {
         return "let \(name): \(type)"
     }
-    static func initializerWithDefaultValueCast(name: String, toType type: String, defaultValueString: String) -> String {
-        return "self.\(name) = dictionary[\"\(name)\"] as? \(type) ?? \(defaultValueString)"
+    static func initializer(name: String, dictionaryName: String) -> String {
+        return "self.\(name) = dictionary[\"\(dictionaryName)\"]"
     }
-    static func initializerNonOptionalCast(name: String, toType type: String) -> String {
-        return "self.\(name) = dictionary[\"\(name)\"] as \(type)"
+    static func initializerNonOptionalCast(name: String, dictionaryName: String, toType type: String) -> String {
+        return "\(initializer(name: name, dictionaryName: dictionaryName)) as \(type)"
+    }
+    static func initializerWithDefaultValueCast(name: String, dictionaryName: String, toType type: String, defaultValueString: String) -> String {
+        return "\(initializer(name: name, dictionaryName: dictionaryName)) as? \(type) ?? \(defaultValueString)"
     }
     
     enum Keyword {
@@ -38,8 +39,8 @@ enum SwiftLanguage {
         static let `enum` = "enum"
     }
     enum ConformingProtocol {
-        static var encodingAndDecoding: String {
-            switch SwiftLanguage.globalVersionSetting {
+        static func encodingAndDecoding(in version: SwiftLanguage.Version) -> String {
+            switch version {
             case .four: return ": Codable"
             default: return ""
             }

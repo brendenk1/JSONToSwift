@@ -14,10 +14,10 @@ extension String {
     }
     
     func removingOccurrencesOfCharacters(from string: String) -> String {
-        return removingOccurrences(of: Array(string.characters))
+        return removingOccurrences(of: string.characters)
     }
     
-    func removingOccurrences(of characters: [Character]) -> String {
+    func removingOccurrences<T: Sequence>(of characters: T) -> String where T.Iterator.Element == Character {
         return characters.reduce(self) { (currentString, character) -> String in
             return currentString.removingOccurrences(of: character.description)
         }
@@ -32,12 +32,8 @@ extension String {
     }
     
     var prependedUnderscoreIfStartingWithDigit: String {
-        if Int(String(describing: characters.first!)) != nil {
-            return "_\(self)"
-        }
-        else {
-            return self
-        }
+        guard let existingFirstCharacter = characters.first, Int(String(describing: existingFirstCharacter)) != nil else { return self }
+        return "_\(self)"
     }
     
     var removedUnderscoreAtBeginning: String {
